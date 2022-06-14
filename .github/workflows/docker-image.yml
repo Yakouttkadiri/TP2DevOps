@@ -1,5 +1,4 @@
 name: Docker Image CI
-
 on:
   push:
     branches: [ "main" ]
@@ -7,13 +6,15 @@ on:
     branches: [ "main" ]
 
 jobs:
-  docker:
+
+  build:
+
     runs-on: ubuntu-latest
+
     steps:
-    
-      - 
-        uses: actions/checkout@v2
-        name: Check out code
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -24,9 +25,13 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
       -
+        name: hadolint
+        uses: reviewdog/action-hadolint@v1
+        with:
+          reporter: github-pr-review
+      -
         name: Build and push
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: ${{ secrets.USERNAME }}/tp2_devops_touhami_kadiri_yakout:latest      
-          
+          tags: yaksoutk/tp2_devops_touhami_kadiri_yakout
